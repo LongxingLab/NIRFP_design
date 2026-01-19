@@ -1,0 +1,95 @@
+<ROSETTASCRIPTS>
+
+<SCOREFXNS>
+	<ScoreFunction name="sfxn"  weights="beta_nov16.wts" />
+</SCOREFXNS>
+
+<RESIDUE_SELECTORS>
+
+    <True name="full_pose" />
+
+    <ResidueName name="FDI" residue_name3="FDI" />
+    <Not name="L_caa" selector="FDI" />
+    <ResidueName name="FDC" residue_name3="FDC" />
+    <Not name="protein" selector="FDC" />
+
+</RESIDUE_SELECTORS>
+
+<TASKOPERATIONS>
+</TASKOPERATIONS>
+
+<FILTERS>
+
+	<Ddg name="ddg_norepack"  threshold="-40" jump="1" repeats="1" repack="0" confidence="0" scorefxn="sfxn" />
+	<ContactMolecularSurface name="contact_FDC" verbose="0" distance_weight="0.5" confidence="0" target_selector="FDC" binder_selector="protein" min_interface="100" />
+
+	# score per residue
+	<ResidueCount name="res_count_all" max_residue_count="9999" confidence="0"/>
+	<ScoreType name="total_score" scorefxn="sfxn" threshold="0"/>
+	<CalculatorFilter name="score_per_res" equation="total_score / res" threshold="-2.5" confidence="0">
+		<Var name="total_score" filter="total_score"/>
+		<Var name="res" filter="res_count_all"/>
+	</CalculatorFilter>
+
+	<ScoreType name="fa_atr" scorefxn="sfxn" threshold="0" score_type="fa_atr" />
+	<CalculatorFilter name="fa_atr_per_res" equation="fa_atr_score / res" threshold="-5.2" confidence="0">
+		<Var name="fa_atr_score" filter="fa_atr"/>
+		<Var name="res" filter="res_count_all"/>
+	</CalculatorFilter>
+
+	<Holes name="holes" confidence="0"/>
+
+	<SSShapeComplementarity name="ss_sc" verbose="0" confidence="0" />
+	<SSShapeComplementarity name="helix_sc" verbose="1" loops="0" helices="1" confidence="0" />
+	<SSShapeComplementarity name="loop_sc" verbose="1" loops="1" helices="0" confidence="0" />
+
+	SSPrediction name="mismatch_probability" confidence="0" cmd="/storage/caolongxingLab/software/psipred/runpsipred_single" use_probability="1" mismatch_probability="1" use_svm="0" />
+
+	<BuriedUnsatHbonds name="buns_heavy_ball_1.1D" use_reporter_behavior="true" report_all_heavy_atom_unsats="true" scorefxn="sfxn" ignore_surface_res="true" print_out_info_to_pdb="true" confidence="0" use_ddG_style="false" burial_cutoff="0.01" dalphaball_sasa="true" probe_radius="1.1" max_hbond_energy="1.5" />
+        <BuriedUnsatHbonds name="sbuns5.0_heavy_ball_1.1D" use_reporter_behavior="true" report_all_heavy_atom_unsats="true" scorefxn="sfxn" ignore_surface_res="true" print_out_info_to_pdb="true" confidence="0" use_ddG_style="false" burial_cutoff="0.01" dalphaball_sasa="true" probe_radius="1.1" atomic_depth_selection="5.0" atomic_depth_deeper_than="false" atomic_depth_resolution="0.49" max_hbond_energy="1.5"/>
+        <BuriedUnsatHbonds name="vbuns5.0_heavy_ball_1.1D" use_reporter_behavior="true" report_all_heavy_atom_unsats="true" scorefxn="sfxn" ignore_surface_res="true" print_out_info_to_pdb="true" confidence="0" use_ddG_style="false" dalphaball_sasa="true" probe_radius="1.1" atomic_depth_selection="5.0" burial_cutoff="1000" atomic_depth_resolution="0.49" max_hbond_energy="1.5"/>
+
+</FILTERS>
+
+<TASKOPERATIONS>
+	<InitializeFromCommandline name="init"/>
+    <IncludeCurrent name="current" />
+    <ExtraRotamersGeneric name="ex1" ex1="1" />
+    <ExtraRotamersGeneric name="ex1_ex2" ex1="1" ex2aro="1" />
+    <LimitAromaChi2 name="limitchi2" chi2max="110" chi2min="70" include_trp="True" />
+    ConsensusLoopDesign name="consensus_loop" include_adjacent_residues="True" />
+
+    <OperateOnResidueSubset name="restrict_repacking" selector="full_pose">
+	<RestrictToRepackingRLT/>
+    </OperateOnResidueSubset>
+
+    <OperateOnResidueSubset name="restrict_FDI" selector="FDI">
+        <RestrictToRepackingRLT/>
+    </OperateOnResidueSubset>
+
+</TASKOPERATIONS>
+
+<MOVERS>
+	<Dssp name="dssp" />
+</MOVERS>
+
+<PROTOCOLS>
+	<Add mover_name="dssp" />
+
+	# score
+	<Add filter_name="score_per_res" />
+	<Add filter="fa_atr_per_res" />
+
+	# ss packing
+	<Add filter_name="ss_sc" />
+	<Add filter_name="helix_sc" />
+	<Add filter_name="loop_sc" />
+
+	<Add filter_name="holes" />
+
+	<Add filter="vbuns5.0_heavy_ball_1.1D" />
+        <Add filter="sbuns5.0_heavy_ball_1.1D" />
+        <Add filter="buns_heavy_ball_1.1D" />
+</PROTOCOLS>
+
+</ROSETTASCRIPTS>

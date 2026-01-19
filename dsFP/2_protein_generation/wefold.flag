@@ -1,0 +1,34 @@
+-len 120
+-num_repeats 1
+-symmetry C1
+-frag_path awesome_7HL_frags_20220427.bin
+-rpx_db rpx_cart2.0_ang26.0_ss_ALLAA.phmap
+-rpx_cart_resl 2.0
+-rpx_ang_resl 26.0
+-gzip
+-use_ss
+-hallucinate
+
+-total_score_cutoff -16.0
+-sidechain_neighbor_cutoff 2.20
+-num_helix 4
+-context_pdb FDC_centered.pdb
+-rif_table FDC_clipped_rif_cart1.0_ang16.0_bound512.phmap
+-rif_cart_resl 1.0
+-rif_ang_resl 16.0
+-rif_score_cutoff -1000
+-rif_weight 10
+-context_clash_weight 5.0
+-context_clash_radius 1.3
+-CB_swelling_factor 1.1
+-mcmc_outer_cycles 5
+-mcmc_inner_cycles 10000 
+
+-nstruct 500
+#-output_dir ./output/
+#-ncaa ~/wuRFP_opt/wefold_input/BLA_helix_Pfr.pdb
+-output_prefix FD1080
+-motif_ss HHHHHHHHHHHHH
+-ligand_pdb FDC_centered.pdb
+-ligand_neighbors_cutoff 9.5
+-early_stop

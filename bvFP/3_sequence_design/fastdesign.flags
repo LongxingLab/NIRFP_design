@@ -1,0 +1,18 @@
+-nblist_autoupdate true
+-corrections::beta_nov16
+-chemical:exclude_patches LowerDNA UpperDNA Cterm_amidation SpecialRotamer VirtualBB ShoveBB VirtualDNAPhosphate VirtualNTerm CTermConnect sc_orbitals pro_hydroxylated_case1 pro_hydroxylated_case2 ser_phosphorylated thr_phosphorylated tyr_phosphorylated tyr_sulfated lys_dimethylated lys_monomethylated  lys_trimethylated lys_acetylated glu_carboxylated cys_acetylated tyr_diiodinated N_acetylated C_methylamidated MethylatedProteinCterm
+## For ramping down constraints during relaxes:
+-relax::ramp_constraints true
+-mute protocols.rosetta_scripts.ParsedProtocol.REPORT
+-holes:dalphaball /home/caolongxingLab/caolongxing/bin/DAlphaBall.gcc
+
+-out:pdb_gz
+-output_pose_energies_table false
+
+
+-dunbrack_prob_buried 0.8
+-dunbrack_prob_nonburied 0.8
+-dunbrack_prob_buried_semi 0.8
+-dunbrack_prob_nonburied_semi 0.8
+
+-extra_res_fa /home/caolongxingLab/caolongxing/wuRFP/scripts/BLA.fa.params
